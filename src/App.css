@@ -72,6 +72,7 @@ td {
   position: absolute;
   bottom: 0;
   width: 100%;
+  max-height: 110%;
   background: linear-gradient(transparent, #5cd6f1);;
 }
 

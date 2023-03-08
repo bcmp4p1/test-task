@@ -66,7 +66,6 @@ export const Main: React.FC = () => {
 
   const handleMouseEnterSum = (index: number) => {
     setHoveredSum(index);
-    console.log(1222);
   };
 
   const handleMouseLeaveSum = () => {
@@ -141,45 +140,47 @@ export const Main: React.FC = () => {
             ))}
             <th className="name">Sum value</th>
           </tr>
-          {matrix.map((row, rowIndex) => (
-            <tr key={row[0].id} className="row">
-              <th>{rowIndex + 1}</th>
-              {row.map((cell, cellIndex) => (
-                <Cell
-                  cellIndex={cellIndex}
-                  rowIndex={rowIndex}
-                  value={cell.value}
-                  key={cell.id}
-                  onClick={handleCellClick}
-                  onMouseLeave={handleMouseLeave}
-                  onMouseEnter={handleMouseEnter}
-                  isNear={nearestCells.some((item) => item.id === cell.id)}
-                  percent={
-                    Math.round(
-                      (cell.value /
-                        row.reduce((sum, item) => sum + item.value, 0)) *
-                        1000
-                    ) / 10
-                  }
-                  isGradient={rowIndex === hoveredSum}
-                />
-              ))}
-              <td
-                onMouseLeave={handleMouseLeaveSum}
-                onMouseEnter={() => handleMouseEnterSum(rowIndex)}
-              >
-                {row.reduce((sum, item) => sum + item.value, 0)}
-              </td>
-              <button
-                className="cross"
-                onClick={() => {
-                  handleDeleteRow(rowIndex);
-                }}
-              >
-                x
-              </button>
-            </tr>
-          ))}
+          {matrix.length > 0 &&
+            matrix[0].length > 0 &&
+            matrix.map((row, rowIndex) => (
+              <tr key={row[0].id} className="row">
+                <th>{rowIndex + 1}</th>
+                {row.map((cell, cellIndex) => (
+                  <Cell
+                    cellIndex={cellIndex}
+                    rowIndex={rowIndex}
+                    value={cell.value}
+                    key={cell.id}
+                    onClick={handleCellClick}
+                    onMouseLeave={handleMouseLeave}
+                    onMouseEnter={handleMouseEnter}
+                    isNear={nearestCells.some((item) => item.id === cell.id)}
+                    percent={
+                      Math.round(
+                        (cell.value /
+                          row.reduce((sum, item) => sum + item.value, 0)) *
+                          1000
+                      ) / 10
+                    }
+                    isGradient={rowIndex === hoveredSum}
+                  />
+                ))}
+                <td
+                  onMouseLeave={handleMouseLeaveSum}
+                  onMouseEnter={() => handleMouseEnterSum(rowIndex)}
+                >
+                  {row.reduce((sum, item) => sum + item.value, 0)}
+                </td>
+                <button
+                  className="cross"
+                  onClick={() => {
+                    handleDeleteRow(rowIndex);
+                  }}
+                >
+                  x
+                </button>
+              </tr>
+            ))}
           <tr>
             <th className="name">Average value</th>
             {matrix[0]?.map((item, index) => (
