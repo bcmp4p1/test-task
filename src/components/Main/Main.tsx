@@ -154,12 +154,13 @@ export const Main: React.FC = () => {
                   onMouseLeave={handleMouseLeave}
                   onMouseEnter={handleMouseEnter}
                   isNear={nearestCells.some((item) => item.id === cell.id)}
-                  percent={() => {
-                    const sum = row.reduce((sum, item) => sum + item.value, 0);
-                    const value = cell.value;
-
-                    return Math.round((value / sum) * 1000) / 10;
-                  }}
+                  percent={
+                    Math.round(
+                      (cell.value /
+                        row.reduce((sum, item) => sum + item.value, 0)) *
+                        1000
+                    ) / 10
+                  }
                   isGradient={rowIndex === hoveredSum}
                 />
               ))}

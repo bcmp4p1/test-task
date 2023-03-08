@@ -9,7 +9,7 @@ type Props = {
   onMouseEnter: (value: number) => void;
   onMouseLeave: () => void;
   isNear: boolean;
-  percent: () => number;
+  percent: number;
   isGradient: boolean;
 };
 
@@ -37,7 +37,13 @@ export const Cell: React.FC<Props> = ({
         onMouseEnter={() => onMouseEnter(value)}
         onMouseLeave={onMouseLeave}
       >
-        {isGradient ? `${percent()}%` : value}
+        {isGradient && (
+          <div
+            className="cell__background"
+            style={{ height: `${percent * 1.5}%` }}
+          />
+        )}
+        <p className="cell__text">{isGradient ? `${percent}%` : value}</p>
       </button>
     </td>
   );

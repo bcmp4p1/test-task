@@ -40,6 +40,7 @@ td {
 }
 
 .cell {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -64,8 +65,19 @@ td {
 
 .cell--gradient {
   background: rgb(246,183,255);
-  background: linear-gradient(90deg, rgba(246,183,255,1) 0%, rgba(110,221,219,1) 58%);
   transition: all 0.3s;
+}
+
+.cell__background {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: linear-gradient(transparent, #5cd6f1);;
+}
+
+.cell__text {
+  position: relative;
+  z-index: 1;
 }
 
 .button {
