@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { validateNumber } from 'src/helpers/validateNumber';
 import { Cell } from '../Cell';
+import { AppContext } from 'src/context/AppContext';
 
 interface Cell {
   id: number;
@@ -8,85 +9,7 @@ interface Cell {
 }
 
 export const Main: React.FC = () => {
-  const [rowsCount, setRowsCount] = useState(5);
-  const [columnsCount, setColumnsCount] = useState(5);
-  const [matrix, setMatrix] = useState<Cell[][]>([]);
-  const [hoveredCell, setHoveredCell] = useState<Cell | null>(null);
-  const [nearestCells, setNearestCells] = useState<Cell[]>([]);
-  const [hoveredSum, setHoveredSum] = useState<number | null>(null);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setMatrix(
-      Array.from({ length: rowsCount }, () =>
-        Array.from({ length: columnsCount }, () => ({
-          id: Math.random(),
-          value: Number(String(Math.random() * 100000000).slice(0, 3)),
-        }))
-      )
-    );
-  };
-
-  useEffect(() => {
-    setMatrix(
-      Array.from({ length: rowsCount }, () =>
-        Array.from({ length: columnsCount }, () => ({
-          id: Math.random(),
-          value: Number(String(Math.random() * 10000).slice(0, 3)),
-        }))
-      )
-    );
-  }, []);
-
-  const handleCellClick = (row: number, column: number) => {
-    if (matrix[row][column].value < 999) {
-      setMatrix([
-        ...matrix.slice(0, row),
-        [
-          ...matrix[row].slice(0, column),
-          { ...matrix[row][column], value: matrix[row][column].value + 1 },
-          ...matrix[row].slice(column + 1),
-        ],
-        ...matrix.slice(row + 1),
-      ]);
-    }
-  };
-
-  const handleMouseEnter = (value: number) => {
-    const sordetMatrix = matrix
-      .reduce((arr, item) => arr.concat(item), [])
-      .sort((a, b) => Math.abs(a.value - value) - Math.abs(b.value - value));
-    setNearestCells(sordetMatrix.slice(0, 6));
-  };
-
-  const handleMouseLeave = () => {
-    setHoveredCell(null);
-    setNearestCells([]);
-  };
-
-  const handleMouseEnterSum = (index: number) => {
-    setHoveredSum(index);
-  };
-
-  const handleMouseLeaveSum = () => {
-    setHoveredSum(null);
-  };
-
-  const handleDeleteRow = (rowIndex: number) => {
-    setMatrix(matrix.filter((item, index) => index !== rowIndex));
-    setRowsCount(rowsCount - 1);
-  };
-
-  const handleAddRow = () => {
-    setMatrix([
-      ...matrix,
-      Array.from({ length: columnsCount }, () => ({
-        id: Math.random(),
-        value: Number(String(Math.random() * 100000000).slice(0, 3)),
-      })),
-    ]);
-    setRowsCount(rowsCount + 1);
-  };
+  const {} = useContext(AppContext);
 
   return (
     <main>

@@ -1,11 +1,16 @@
 import './App.css';
 import { Main } from 'src/components/Main';
+import React from 'react';
+
+import { AppContextProvider } from 'src/context/AppContext';
 
 function App() {
   return (
-    <div className="App">
-      <Main />
-    </div>
+    <AppContextProvider>
+      <div className="App">
+        <Main />
+      </div>
+    </AppContextProvider>
   );
 }
 

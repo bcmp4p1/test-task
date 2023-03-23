@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import classNames from 'classnames';
+import { AppContext } from 'src/context/AppContext';
 
 type Props = {
   rowIndex: number;
@@ -24,18 +25,21 @@ export const Cell: React.FC<Props> = ({
   percent,
   isGradient,
 }) => {
+  const { handleCellClick, handleMouseLeave, handleMouseEnter } =
+    useContext(AppContext);
+
   return (
     <td>
       <button
         onClick={() => {
-          onClick(rowIndex, cellIndex);
+          handleCellClick(rowIndex, cellIndex);
         }}
         className={classNames('cell', {
           'cell--near': isNear,
           'cell--gradient': isGradient,
         })}
-        onMouseEnter={() => onMouseEnter(value)}
-        onMouseLeave={onMouseLeave}
+        onMouseEnter={() => handleMouseEnter(value)}
+        onMouseLeave={handleMouseLeave}
       >
         {isGradient && (
           <div
