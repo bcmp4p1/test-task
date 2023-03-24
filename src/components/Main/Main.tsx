@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { validateNumber } from 'src/helpers/validateNumber';
 import { Cell } from '../Cell';
 import { AppContext } from 'src/context/AppContext';
@@ -9,7 +9,22 @@ interface Cell {
 }
 
 export const Main: React.FC = () => {
-  const {} = useContext(AppContext);
+  const {
+    rowsCount,
+    setRowsCount,
+    columnsCount,
+    setColumnsCount,
+    nearestCount,
+    setNearestCount,
+    matrix,
+    handleSubmit,
+    nearestCells,
+    hoveredSum,
+    handleDeleteRow,
+    handleMouseLeaveSum,
+    handleMouseEnterSum,
+    handleAddRow,
+  } = useContext(AppContext);
 
   return (
     <main>
@@ -32,8 +47,6 @@ export const Main: React.FC = () => {
           }}
           value={rowsCount}
           placeholder="enter rows count"
-          min={0}
-          max={100}
         />
         <label htmlFor="columns">Enter columns count</label>
         <input
@@ -47,8 +60,22 @@ export const Main: React.FC = () => {
           }}
           value={columnsCount}
           placeholder="enter column count"
-          min={0}
-          max={100}
+        />
+        <label htmlFor="columns">Enter nearest numbers count</label>
+        <input
+          id="columns"
+          type="text"
+          onChange={(e) => {
+            const value = e.target.value;
+            if (
+              Number(value) >= 0 &&
+              Number(value) <= rowsCount * columnsCount - 1
+            ) {
+              setNearestCount(Number(validateNumber(value)));
+            }
+          }}
+          value={nearestCount}
+          placeholder="enter column count"
         />
         <button type="submit" className="submit">
           Submit
@@ -74,9 +101,6 @@ export const Main: React.FC = () => {
                     rowIndex={rowIndex}
                     value={cell.value}
                     key={cell.id}
-                    onClick={handleCellClick}
-                    onMouseLeave={handleMouseLeave}
-                    onMouseEnter={handleMouseEnter}
                     isNear={nearestCells.some((item) => item.id === cell.id)}
                     percent={
                       Math.round(

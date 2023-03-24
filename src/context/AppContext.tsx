@@ -18,6 +18,8 @@ interface AppContextInterface {
   setRowsCount: Dispatch<SetStateAction<number>>;
   columnsCount: number;
   setColumnsCount: Dispatch<SetStateAction<number>>;
+  nearestCount: number;
+  setNearestCount: Dispatch<SetStateAction<number>>;
   matrix: Cell[][];
   setMatrix: Dispatch<SetStateAction<Cell[][]>>;
   hoveredCell: Cell | null;
@@ -37,10 +39,12 @@ interface AppContextInterface {
 }
 
 const initialState = {
-  rowsCount: 0,
+  rowsCount: 5,
   setRowsCount: () => {},
-  columnsCount: 0,
+  columnsCount: 5,
   setColumnsCount: () => {},
+  nearestCount: 5,
+  setNearestCount: () => {},
   matrix: [],
   setMatrix: () => {},
   hoveredCell: null,
@@ -68,6 +72,7 @@ type ProvideProps = {
 export const AppContextProvider: React.FC<ProvideProps> = ({ children }) => {
   const [rowsCount, setRowsCount] = useState(5);
   const [columnsCount, setColumnsCount] = useState(5);
+  const [nearestCount, setNearestCount] = useState(5);
   const [matrix, setMatrix] = useState<Cell[][]>([]);
   const [hoveredCell, setHoveredCell] = useState<Cell | null>(null);
   const [nearestCells, setNearestCells] = useState<Cell[]>([]);
@@ -84,38 +89,47 @@ export const AppContextProvider: React.FC<ProvideProps> = ({ children }) => {
     );
   }, []);
 
-  const handleCellClick = useCallback((row: number, column: number) => {
-    if (matrix[row][column].value < 999) {
-      setMatrix([
-        ...matrix.slice(0, row),
-        [
-          ...matrix[row].slice(0, column),
-          { ...matrix[row][column], value: matrix[row][column].value + 1 },
-          ...matrix[row].slice(column + 1),
-        ],
-        ...matrix.slice(row + 1),
-      ]);
-    }
-  }, []);
+  const handleCellClick = useCallback(
+    (row: number, column: number) => {
+      if (matrix[row][column].value < 999) {
+        setMatrix([
+          ...matrix.slice(0, row),
+          [
+            ...matrix[row].slice(0, column),
+            { ...matrix[row][column], value: matrix[row][column].value + 1 },
+            ...matrix[row].slice(column + 1),
+          ],
+          ...matrix.slice(row + 1),
+        ]);
+      }
+    },
+    [matrix]
+  );
 
-  const handleSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setMatrix(
-      Array.from({ length: rowsCount }, () =>
-        Array.from({ length: columnsCount }, () => ({
-          id: Math.random(),
-          value: Number(String(Math.random() * 100000000).slice(0, 3)),
-        }))
-      )
-    );
-  }, []);
+  const handleSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      setMatrix(
+        Array.from({ length: rowsCount }, () =>
+          Array.from({ length: columnsCount }, () => ({
+            id: Math.random(),
+            value: Number(String(Math.random() * 100000000).slice(0, 3)),
+          }))
+        )
+      );
+    },
+    [columnsCount, rowsCount]
+  );
 
-  const handleMouseEnter = useCallback((value: number) => {
-    const sordetMatrix = matrix
-      .reduce((arr, item) => arr.concat(item), [])
-      .sort((a, b) => Math.abs(a.value - value) - Math.abs(b.value - value));
-    setNearestCells(sordetMatrix.slice(0, 6));
-  }, []);
+  const handleMouseEnter = useCallback(
+    (value: number) => {
+      const sordetMatrix = matrix
+        .reduce((arr, item) => arr.concat(item), [])
+        .sort((a, b) => Math.abs(a.value - value) - Math.abs(b.value - value));
+      setNearestCells(sordetMatrix.slice(0, nearestCount + 1));
+    },
+    [matrix, nearestCount]
+  );
 
   const handleMouseLeave = useCallback(() => {
     setHoveredCell(null);
@@ -130,10 +144,13 @@ export const AppContextProvider: React.FC<ProvideProps> = ({ children }) => {
     setHoveredSum(null);
   }, []);
 
-  const handleDeleteRow = useCallback((rowIndex: number) => {
-    setMatrix(matrix.filter((item, index) => index !== rowIndex));
-    setRowsCount(rowsCount - 1);
-  }, []);
+  const handleDeleteRow = useCallback(
+    (rowIndex: number) => {
+      setMatrix(matrix.filter((item, index) => index !== rowIndex));
+      setRowsCount(rowsCount - 1);
+    },
+    [matrix, rowsCount]
+  );
 
   const handleAddRow = useCallback(() => {
     setMatrix([
@@ -144,7 +161,7 @@ export const AppContextProvider: React.FC<ProvideProps> = ({ children }) => {
       })),
     ]);
     setRowsCount(rowsCount + 1);
-  }, []);
+  }, [columnsCount, matrix, rowsCount]);
 
   return (
     <AppContext.Provider
@@ -153,6 +170,8 @@ export const AppContextProvider: React.FC<ProvideProps> = ({ children }) => {
         setRowsCount,
         columnsCount,
         setColumnsCount,
+        nearestCount,
+        setNearestCount,
         matrix,
         setMatrix,
         hoveredCell,
@@ -162,7 +181,7 @@ export const AppContextProvider: React.FC<ProvideProps> = ({ children }) => {
         hoveredSum,
         setHoveredSum,
         handleCellClick,
-        handleSubmit,
+        handleSubmit: handleSubmit,
         handleMouseEnter,
         handleMouseLeave,
         handleMouseEnterSum,

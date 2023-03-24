@@ -6,9 +6,6 @@ type Props = {
   rowIndex: number;
   cellIndex: number;
   value: number;
-  onClick: (row: number, column: number) => void;
-  onMouseEnter: (value: number) => void;
-  onMouseLeave: () => void;
   isNear: boolean;
   percent: number;
   isGradient: boolean;
@@ -18,9 +15,6 @@ export const Cell: React.FC<Props> = ({
   rowIndex,
   cellIndex,
   value,
-  onClick,
-  onMouseEnter,
-  onMouseLeave,
   isNear,
   percent,
   isGradient,
